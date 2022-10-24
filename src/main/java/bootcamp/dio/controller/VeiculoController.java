@@ -26,7 +26,7 @@ public class VeiculoController {
         return veiculoService.getById(id);
     }
 
-    @GetMapping("/busca-por-placa/{placa}")
+    @GetMapping("/placa/{placa}")
     @ResponseBody
     public ResponseEntity<Veiculo> getByPlaca(@PathVariable String placa) {
         return veiculoService.getByPlaca(placa);

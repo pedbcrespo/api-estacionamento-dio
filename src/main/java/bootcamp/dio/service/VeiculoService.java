@@ -1,6 +1,5 @@
 package bootcamp.dio.service;
 
-import bootcamp.dio.dto.DTOVeiculo;
 import bootcamp.dio.model.Veiculo;
 import bootcamp.dio.repository.VeiculoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.temporal.TemporalAmount;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -38,8 +36,9 @@ public class VeiculoService {
     }
 
     public ResponseEntity<Veiculo> getByPlaca(String placa) {
-        Veiculo veiculoBuscado = veiculoRepository.findByPlaca(placa);
-        return ResponseEntity.ok(veiculoBuscado);
+        List<Veiculo> veiculos = veiculoRepository.findByPlaca(placa).stream().toList();
+        if(veiculos.size() == 0){return null;}
+        return ResponseEntity.ok(veiculos.get(0));
     }
 
     public ResponseEntity<List<Veiculo>> getByDesc(Veiculo filtro) {

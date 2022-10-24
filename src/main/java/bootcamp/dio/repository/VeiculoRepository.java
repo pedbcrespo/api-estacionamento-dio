@@ -8,6 +8,8 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.List;
 
 @Repository
 public interface VeiculoRepository extends JpaRepository<Veiculo, Long> {
@@ -17,6 +19,6 @@ public interface VeiculoRepository extends JpaRepository<Veiculo, Long> {
     void updateSaida(@Param("saida") LocalDateTime saida,  @Param("id") Long id);
 
     @Modifying
-    @Query(value = "select * from veiculo where placa = :placa", nativeQuery = true)
-    Veiculo findByPlaca(@Param("placa") String placa);
+    @Query(value="select * from veiculo where placa = :placa", nativeQuery = true)
+    Collection<Veiculo> findByPlaca(@Param("placa") String placa);
 }
