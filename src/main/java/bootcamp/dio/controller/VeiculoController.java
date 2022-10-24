@@ -32,25 +32,19 @@ public class VeiculoController {
         return veiculoService.getByPlaca(placa);
     }
 
-    @GetMapping("/busca-por")
-    @ResponseBody
-    public ResponseEntity<List<Veiculo>> getListaBy(@RequestBody Veiculo filtro) {
-        return veiculoService.getByDesc(filtro);
-    }
-
-    @PostMapping("/add-veiculo")
+    @PostMapping
     @ResponseStatus
     public ResponseEntity<Veiculo> post(@RequestBody Veiculo veiculo) {
         return veiculoService.save(veiculo);
     }
 
-    @PutMapping("/atualiza/{placa}")
+    @PutMapping("/{id}")
     @ResponseStatus
     public ResponseEntity<Veiculo> update(@PathVariable Long id, @RequestBody Veiculo veiculo) {
         return veiculoService.updateSaida(id, veiculo);
     }
 
-    @DeleteMapping("/deleta/{id}")
+    @DeleteMapping("/{id}")
     @ResponseStatus
     public ResponseEntity<Veiculo> delete(@PathVariable Long id) {
         return veiculoService.delete(id);

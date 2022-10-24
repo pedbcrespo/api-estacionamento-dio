@@ -22,6 +22,7 @@ public class VeiculoService {
 
     public ResponseEntity<List<Veiculo>> getAll() {
         List<Veiculo> resultado = veiculoRepository.findAll();
+        resultado.forEach(this::calculaValorEstacionamento);
         return ResponseEntity.ok(resultado);
     }
 
@@ -39,18 +40,6 @@ public class VeiculoService {
         List<Veiculo> veiculos = veiculoRepository.findByPlaca(placa).stream().toList();
         if(veiculos.size() == 0){return null;}
         return ResponseEntity.ok(veiculos.get(0));
-    }
-
-    public ResponseEntity<List<Veiculo>> getByDesc(Veiculo filtro) {
-        ExampleMatcher matcher = ExampleMatcher
-                .matching()
-                .withIgnoreCase()
-                .withStringMatcher(
-                        ExampleMatcher.StringMatcher.CONTAINING
-                );
-        Example<Veiculo> example = Example.of(filtro, matcher);
-        List<Veiculo> listaVeiculos = veiculoRepository.findAll(example);
-        return ResponseEntity.ok(listaVeiculos);
     }
 
     public ResponseEntity<Veiculo> delete(Long id) {
@@ -78,6 +67,8 @@ public class VeiculoService {
         LocalDateTime inicio = veiculo.getHorarioEntrada();
         LocalDateTime saida = veiculo.getHorarioSaida();
         Duration resultado = Duration.between(inicio, saida);
-        return baseValorPorHora * resultado.toHours();
+        Double valor = baseValorPorHora * resultado.toHours();
+        veiculo.setValor(valor);
+        return valor;
     }
 }
