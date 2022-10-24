@@ -26,9 +26,15 @@ public class VeiculoController {
         return veiculoService.getById(id);
     }
 
+    @GetMapping("/busca-por-placa/{placa}")
+    @ResponseBody
+    public ResponseEntity<Veiculo> getByPlaca(@PathVariable String placa) {
+        return veiculoService.getByPlaca(placa);
+    }
+
     @GetMapping("/busca-por")
     @ResponseBody
-    public ResponseEntity<Veiculo> getByDesc(@RequestBody Veiculo filtro) {
+    public ResponseEntity<List<Veiculo>> getListaBy(@RequestBody Veiculo filtro) {
         return veiculoService.getByDesc(filtro);
     }
 

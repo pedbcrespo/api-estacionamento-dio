@@ -37,7 +37,12 @@ public class VeiculoService {
         return ResponseEntity.ok(veiculoSalvo);
     }
 
-    public ResponseEntity<Veiculo> getByDesc(Veiculo filtro) {
+    public ResponseEntity<Veiculo> getByPlaca(String placa) {
+        Veiculo veiculoBuscado = veiculoRepository.findByPlaca(placa);
+        return ResponseEntity.ok(veiculoBuscado);
+    }
+
+    public ResponseEntity<List<Veiculo>> getByDesc(Veiculo filtro) {
         ExampleMatcher matcher = ExampleMatcher
                 .matching()
                 .withIgnoreCase()
@@ -46,7 +51,7 @@ public class VeiculoService {
                 );
         Example<Veiculo> example = Example.of(filtro, matcher);
         List<Veiculo> listaVeiculos = veiculoRepository.findAll(example);
-        return ResponseEntity.ok(listaVeiculos.get(0));
+        return ResponseEntity.ok(listaVeiculos);
     }
 
     public ResponseEntity<Veiculo> delete(Long id) {
