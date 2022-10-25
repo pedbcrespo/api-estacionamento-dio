@@ -1,11 +1,12 @@
 package bootcamp.dio.service;
 
 import bootcamp.dio.dto.DTOVeiculo;
+import bootcamp.dio.exceptions.CalculoValorException;
+import bootcamp.dio.exceptions.VeiculoExistenteException;
+import bootcamp.dio.exceptions.VeiculoInexistenteException;
 import bootcamp.dio.model.Veiculo;
 import bootcamp.dio.repository.VeiculoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -13,7 +14,6 @@ import org.springframework.stereotype.Service;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -38,8 +38,8 @@ public class VeiculoService {
     }
 
     public ResponseEntity<DTOVeiculo> save(Veiculo veiculo) {
-        if(getByPlaca(veiculo.getPlaca())!=null){
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        if(veiculoRepository.findByPlaca(veiculo.getPlaca()).size() != 0){
+            throw new VeiculoExistenteException(veiculo.getPlaca());
         }
         Veiculo veiculoSalvo = veiculoRepository.save(veiculo);
         return ResponseEntity.ok(new DTOVeiculo(veiculoSalvo));
@@ -48,7 +48,7 @@ public class VeiculoService {
     public ResponseEntity<DTOVeiculo> getByPlaca(String placa) {
         List<Veiculo> veiculos = veiculoRepository.findByPlaca(placa).stream().toList();
         if (veiculos.size() == 0) {
-            return null;
+            throw new VeiculoInexistenteException(placa);
         }
         return ResponseEntity.ok(new DTOVeiculo(veiculos.get(0)));
     }
@@ -61,7 +61,7 @@ public class VeiculoService {
 
     public ResponseEntity<DTOVeiculo> updateSaida(Long id, Veiculo atualizacao) {
         if(!veiculoRepository.existsById(id)){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            throw new VeiculoInexistenteException(id);
         }
         LocalDateTime horarioSaida = atualizacao != null ? atualizacao.getHorarioSaida() != null ?
                 atualizacao.getHorarioSaida() : LocalDateTime.now() :
@@ -80,7 +80,10 @@ public class VeiculoService {
         LocalDateTime inicio = veiculo.getHorarioEntrada();
         LocalDateTime saida = veiculo.getHorarioSaida();
         Duration resultado = Duration.between(inicio, saida);
-        Double valor = baseValorPorHora * resultado.toHours();
+        double valor = baseValorPorHora * resultado.toHours();
+        if(valor < 0) {
+            throw new CalculoValorException(dto);
+        }
         dto.setValor(valor);
         return dto;
     }
