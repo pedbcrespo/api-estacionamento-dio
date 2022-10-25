@@ -47,9 +47,14 @@ public class VeiculoController {
     @PutMapping("/{id}")
     @ResponseStatus
     public ResponseEntity<DTOVeiculo> update(@PathVariable Long id, @RequestBody Veiculo veiculo) {
-        return veiculoService.updateSaida(id, veiculo);
+        return veiculoService.update(id, veiculo);
     }
 
+    @PutMapping("/marca-saida/{id}")
+    @ResponseStatus
+    public ResponseEntity<DTOVeiculo> updateSaida(@PathVariable Long id, @RequestBody Veiculo veiculo) {
+        return veiculoService.updateSaida(id, veiculo);
+    }
     @DeleteMapping("/{id}")
     @ResponseStatus
     public ResponseEntity<DTOVeiculo> delete(@PathVariable Long id) {

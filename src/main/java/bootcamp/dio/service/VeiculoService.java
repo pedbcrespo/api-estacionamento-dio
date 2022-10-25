@@ -71,6 +71,16 @@ public class VeiculoService {
         return ResponseEntity.ok(veiculoAtualizado);
     }
 
+    public ResponseEntity<DTOVeiculo> update(Long id, Veiculo atualizacao) {
+        if(!veiculoRepository.existsById(id)){
+            throw new VeiculoInexistenteException(id);
+        }
+        String placa = atualizacao.getPlaca();
+        LocalDateTime entrada = atualizacao.getHorarioEntrada();
+        LocalDateTime saida = atualizacao.getHorarioSaida();
+        veiculoRepository.updateDados(id, placa, entrada, saida);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
     private DTOVeiculo calculaValorEstacionamento(Veiculo veiculo) {
         DTOVeiculo dto = new DTOVeiculo(veiculo);
         if (veiculo.getHorarioSaida() == null) {

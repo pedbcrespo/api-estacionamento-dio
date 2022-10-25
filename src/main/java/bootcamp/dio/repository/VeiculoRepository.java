@@ -19,6 +19,11 @@ public interface VeiculoRepository extends JpaRepository<Veiculo, Long> {
     @Query(value = "update Veiculo v set v.horarioSaida = :saida where v.id = :id")
     void updateSaida(@Param("saida") LocalDateTime saida,  @Param("id") Long id);
 
+    @Transactional
+    @Modifying
+    @Query(value = "update Veiculo v set v.placa = :placa, v.horarioEntrada = :entrada, v.horarioSaida = :saida where v.id = :id")
+    void updateDados(@Param("id") Long id, @Param("placa") String placa, @Param("entrada") LocalDateTime entrada, @Param("saida") LocalDateTime saida);
+
     @Query(value="select * from veiculo where placa = :placa", nativeQuery = true)
     Collection<Veiculo> findByPlaca(@Param("placa") String placa);
 }
