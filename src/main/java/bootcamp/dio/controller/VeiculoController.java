@@ -3,7 +3,7 @@ package bootcamp.dio.controller;
 import bootcamp.dio.dto.DTOVeiculo;
 import bootcamp.dio.model.Veiculo;
 import bootcamp.dio.service.VeiculoService;
-import org.springframework.beans.factory.annotation.Autowired;
+import io.swagger.annotations.Api;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,6 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/veiculos")
+@Api("Veiculos Controller")
 public class VeiculoController {
 
     private final VeiculoService veiculoService;

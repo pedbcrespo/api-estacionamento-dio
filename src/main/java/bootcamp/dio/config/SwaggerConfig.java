@@ -2,6 +2,7 @@ package bootcamp.dio.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
+import springfox.documentation.annotations.ApiIgnore;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
@@ -11,6 +12,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @Component
 @EnableSwagger2
+@ApiIgnore
 public class SwaggerConfig {
 
     @Bean
