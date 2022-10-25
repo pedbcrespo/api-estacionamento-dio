@@ -15,11 +15,10 @@ public class Veiculo {
 
     private LocalDateTime horarioSaida;
 
-    private Double valor;
     public Veiculo(Long id, String placa, LocalDateTime horarioEntrada) {
         this.id = id;
         this.placa = placa;
-        this.horarioEntrada = horarioEntrada;
+        this.horarioEntrada = horarioEntrada != null? horarioEntrada: LocalDateTime.now();
     }
 
     public Veiculo() {
@@ -39,14 +38,6 @@ public class Veiculo {
 
     public LocalDateTime getHorarioSaida() {
         return horarioSaida;
-    }
-
-    public Double getValor() {
-        return valor;
-    }
-
-    public void setValor(Double valor) {
-        this.valor = valor;
     }
 
     public void setHorarioSaida(LocalDateTime horarioSaida) {

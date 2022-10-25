@@ -1,5 +1,6 @@
 package bootcamp.dio.service;
 
+import bootcamp.dio.dto.DTOVeiculo;
 import bootcamp.dio.model.Veiculo;
 import bootcamp.dio.repository.VeiculoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,55 +21,57 @@ public class VeiculoService {
     @Autowired
     VeiculoRepository veiculoRepository;
 
-    public ResponseEntity<List<Veiculo>> getAll() {
+    public ResponseEntity<List<DTOVeiculo>> getAll() {
         List<Veiculo> resultado = veiculoRepository.findAll();
-        resultado.forEach(this::calculaValorEstacionamento);
-        return ResponseEntity.ok(resultado);
+        List<DTOVeiculo> resultadoEmDTO = resultado.stream().map(this::calculaValorEstacionamento).toList();
+        return ResponseEntity.ok(resultadoEmDTO);
     }
 
-    public ResponseEntity<Veiculo> getById(Long id) {
+    public ResponseEntity<DTOVeiculo> getById(Long id) {
         Optional<Veiculo> optionalVeiculo = veiculoRepository.findById(id);
-        return optionalVeiculo.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+        DTOVeiculo dto = new DTOVeiculo(optionalVeiculo.get());
+        return ResponseEntity.ok(dto);
     }
 
-    public ResponseEntity<Veiculo> save(Veiculo veiculo) {
+    public ResponseEntity<DTOVeiculo> save(Veiculo veiculo) {
         Veiculo veiculoSalvo = veiculoRepository.save(veiculo);
-        return ResponseEntity.ok(veiculoSalvo);
+        return ResponseEntity.ok(new DTOVeiculo(veiculoSalvo));
     }
 
-    public ResponseEntity<Veiculo> getByPlaca(String placa) {
+    public ResponseEntity<DTOVeiculo> getByPlaca(String placa) {
         List<Veiculo> veiculos = veiculoRepository.findByPlaca(placa).stream().toList();
-        if(veiculos.size() == 0){return null;}
-        return ResponseEntity.ok(veiculos.get(0));
+        if (veiculos.size() == 0) {
+            return null;
+        }
+        return ResponseEntity.ok(new DTOVeiculo(veiculos.get(0)));
     }
 
-    public ResponseEntity<Veiculo> delete(Long id) {
-        Veiculo veiculoParaSerRemovido = getById(id).getBody();
+    public ResponseEntity<DTOVeiculo> delete(Long id) {
+        DTOVeiculo veiculoParaSerRemovido = getById(id).getBody();
         veiculoRepository.deleteById(id);
         return ResponseEntity.ok(veiculoParaSerRemovido);
     }
 
-    public ResponseEntity<Veiculo> updateSaida(Long id, Veiculo atualizacao) {
-        LocalDateTime horarioSaida = LocalDateTime.now();
-        if (atualizacao != null) {
-            Objects.requireNonNull(atualizacao);
-            horarioSaida = atualizacao.getHorarioSaida();
-        }
+    public ResponseEntity<DTOVeiculo> updateSaida(Long id, Veiculo atualizacao) {
+        LocalDateTime horarioSaida = atualizacao != null ? atualizacao.getHorarioSaida() != null ?
+                atualizacao.getHorarioSaida() : LocalDateTime.now() :
+                LocalDateTime.now();
         veiculoRepository.updateSaida(horarioSaida, id);
-        Veiculo veiculoAtualizado = getById(id).getBody();
+        DTOVeiculo veiculoAtualizado = getById(id).getBody();
         return ResponseEntity.ok(veiculoAtualizado);
     }
 
-    private Double calculaValorEstacionamento(Veiculo veiculo) {
-        if(veiculo.getHorarioSaida() == null){
-            return null;
+    private DTOVeiculo calculaValorEstacionamento(Veiculo veiculo) {
+        DTOVeiculo dto = new DTOVeiculo(veiculo);
+        if (veiculo.getHorarioSaida() == null) {
+            return dto;
         }
         final double baseValorPorHora = 5.0;
         LocalDateTime inicio = veiculo.getHorarioEntrada();
         LocalDateTime saida = veiculo.getHorarioSaida();
         Duration resultado = Duration.between(inicio, saida);
         Double valor = baseValorPorHora * resultado.toHours();
-        veiculo.setValor(valor);
-        return valor;
+        dto.setValor(valor);
+        return dto;
     }
 }
