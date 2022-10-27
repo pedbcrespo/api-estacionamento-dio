@@ -19,8 +19,12 @@ import java.util.Optional;
 @Service
 public class VeiculoService {
 
-    @Autowired
-    VeiculoRepository veiculoRepository;
+
+    private final VeiculoRepository veiculoRepository;
+
+    public VeiculoService(VeiculoRepository veiculoRepository) {
+        this.veiculoRepository = veiculoRepository;
+    }
 
     public ResponseEntity<List<DTOVeiculo>> getAll() {
         List<Veiculo> resultado = veiculoRepository.findAll();
