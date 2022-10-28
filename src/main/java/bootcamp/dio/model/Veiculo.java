@@ -1,5 +1,7 @@
 package bootcamp.dio.model;
 
+import com.sun.istack.NotNull;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
@@ -8,8 +10,9 @@ public class Veiculo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @NotNull
     private String placa;
-
+    @NotNull
     private LocalDateTime horarioEntrada;
 
     private LocalDateTime horarioSaida;

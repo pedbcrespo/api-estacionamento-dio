@@ -10,7 +10,6 @@ public class InicialController {
 
     @GetMapping
     public ModelAndView redirectWithUsingRedirectPrefix(ModelMap model) {
-        model.addAttribute("attribute", "veiculos");
         return new ModelAndView("redirect:/swagger-ui.html", model);
     }
 
